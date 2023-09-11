@@ -67,3 +67,120 @@ parsing("자바스크립트")
 ```bash
 node inflearn.js
 ```
+
+
+---
+
+# 🟢 UniversityNames Crawling
+```json
+{
+  "name": "uni_name",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "cheerio": "^1.0.0-rc.12",
+    "exceljs": "^4.3.0",
+    "iconv-lite": "^0.6.3",
+    "xlsx": "^0.18.5"
+  }
+}
+
+```
+
+### 1. 모든 내용 크롤링하기 
+```javascript
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+// 크롤링할 웹 페이지 URL
+const url = 'https://apply.jinhakapply.com/SmartRatio';
+
+// Axios를 사용하여 웹 페이지 가져오기
+axios.get(url)
+    .then((response) => {
+        if (response.status === 200) {
+            const html = response.data;
+            const $ = cheerio.load(html);
+
+            // 원하는 내용을 추출하거나 조작할 수 있습니다.
+            // 예를 들어, 전체 페이지 내용을 출력하려면 다음과 같이 합니다.
+            console.log($.html());
+
+            // 또는 특정 태그 내용을 가져오려면 다음과 같이 합니다.
+            // 예를 들어, 모든 <p> 태그 내용을 출력하려면 다음과 같이 합니다.
+            $('#nowResults > li:nth-child(1)').each((index, element) => {
+                console.log($(nth - child(1)).text());
+            });
+
+        } else {
+            console.error('웹 페이지에 접근할 수 없습니다. 상태 코드:', response.status);
+        }
+    })
+    .catch((error) => {
+        console.error('오류 발생:', error);
+    });
+```
+![image](https://github.com/oiosu/Node.js-crawling/assets/99783474/aaac5ce9-d818-45e8-9684-d6251c76af93)
+
+
+### 2. 대학명만 가져오기 
+> 대학 : 4년제 대학
+> 지역 : 서울, 경기
+
+```javascript
+const axios = require('axios');
+const cheerio = require('cheerio');
+const ExcelJS = require('exceljs');
+
+// 크롤링할 웹 페이지 URL
+const url = 'https://apply.jinhakapply.com/SmartRatio';
+
+// Axios를 사용하여 웹 페이지 가져오기
+axios.get(url)
+    .then((response) => {
+        if (response.status === 200) {
+            const html = response.data;
+            const $ = cheerio.load(html);
+
+            const universityNames = [];
+
+            $('').each((index, element) => {
+                const universityName = $(element).text();
+                universityNames.push(universityName);
+            });
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('University Names');
+
+            universityNames.forEach((name) => {
+                worksheet.addRow([name]);
+            });
+
+            const excelFilePath = 'university_names.xlsx';
+            workbook.xlsx.writeFile(excelFilePath)
+                .then(() => {
+                    console.log(`대학 이름이 ${excelFilePath} 파일에 저장되었습니다.`);
+                })
+                .catch((error) => {
+                    console.error('엑셀 파일 저장 중 오류 발생:', error);
+                });
+        } else {
+            console.error('웹 페이지에 접근할 수 없습니다. 상태 코드:', response.status);
+        }
+    })
+    .catch((error) => {
+        console.error('오류 발생:', error);
+    });
+```
+![image](https://github.com/oiosu/Node.js-crawling/assets/99783474/a939be44-7ab1-4f1f-8ea3-83ed3e9eda19)
+
+
+
