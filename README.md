@@ -180,7 +180,8 @@ axios.get(url)
         console.error('오류 발생:', error);
     });
 ```
-![image](https://github.com/oiosu/Node.js-crawling/assets/99783474/a939be44-7ab1-4f1f-8ea3-83ed3e9eda19)
+![image](https://github.com/oiosu/Node.js-crawling/assets/99783474/37a3e2e8-c6d1-46b5-b301-61f7504239a4)
+
 
 
 
